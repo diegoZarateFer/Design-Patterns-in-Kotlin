@@ -7,17 +7,13 @@ fun main() {
     print("Enter your number: ")
     val userNumber = readln().toInt()
 
-    var timer = 0
-    val timerThread = thread {
-        while (!Thread.currentThread().isInterrupted) {
-            timer++
-            println(timer)
-            try {
-                Thread.sleep(1000)
-            } catch (e: InterruptedException) {
-                println("Timer Stopped At $timer")
-                break
-            }
+    var win = false
+    thread {
+        var seconds = 0
+        while (!win) {
+            seconds++
+            println(seconds)
+            Thread.sleep(1000)
         }
     }
 
@@ -27,7 +23,7 @@ fun main() {
             randomNumber = (1..1_000_000_000).random()
         }
 
-        timerThread.interrupt()
+        win = true
         println("Your number is: $randomNumber !!")
     }
 }
