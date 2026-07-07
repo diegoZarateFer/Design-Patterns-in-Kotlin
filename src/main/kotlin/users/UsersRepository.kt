@@ -11,20 +11,57 @@ class UsersRepository private constructor() {
 
     private val file = File("users.json")
 
+    private val observers =  mutableListOf<Display>()
+
     private val _users = loadUsers()
     val users: MutableList<User>
         get() = _users.toMutableList()
 
-    private fun loadUsers(): List<User> {
+    private fun notifyObservers() {
+        for(observer in observers ) {
+            observer.onChange(users)
+        }
+    }
+
+    fun registerObserver(observer: Display) {
+        observers.add(observer)
+        observer.onChange(users)
+    }
+
+    var display: Display? = null
+        set(value) {
+            field = value
+            display?.onChange(users)
+        }
+
+    private fun loadUsers(): MutableList<User> {
         val content = file.readText().trim()
         return Json.decodeFromString(content)
     }
 
+    fun addUser(name: String, lastname: String, age: Int) {
+        val id = users.maxOf { it.id } + 1
+        val newUser = User(id, name, name, age)
+        _users.add(newUser)
+
+        notifyObservers()
+    }
+
+    fun deleteUser(id: Int) {
+        _users.removeIf { it.id == id }
+        notifyObservers()
+    }
+
+    fun saveChanges() {
+        val content = Json.encodeToString(_users)
+        file.writeText(content)
+    }
+
     companion object {
         private val lock = Any()
-        private var instance : UsersRepository? = null
+        private var instance: UsersRepository? = null
 
-        fun getInstance(password: String) : UsersRepository {
+        fun getInstance(password: String): UsersRepository {
             val correctPassword = File("password_users.txt").readText().trim()
             if (correctPassword != password) throw IllegalArgumentException("Wrong password!")
 
