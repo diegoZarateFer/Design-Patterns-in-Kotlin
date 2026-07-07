@@ -8,14 +8,12 @@ import javax.swing.JScrollPane
 import javax.swing.JTextArea
 
 class Display {
-
-    private val textArea = JTextArea().apply {
-        isEditable = false
-        font = Font(Font.SANS_SERIF, Font.PLAIN, 16)
-        margin = Insets(32, 32, 32, 32)
-    }
-
     fun show() {
+        val textArea = JTextArea().apply {
+            isEditable = false
+            font = Font(Font.SANS_SERIF, Font.PLAIN, 16)
+            margin = Insets(32, 32, 32, 32)
+        }
         val scrollPane = JScrollPane(textArea)
 
         JFrame().apply {
@@ -26,12 +24,14 @@ class Display {
             add(scrollPane)
         }
 
-        UsersRepository.getInstance("12345").registerObserver(this)
+        UsersRepository.getInstance("12345").registerObserver(object : Observer<List<User>> {
+            override fun onChanged(users: List<User>) {
+                users.joinToString("\n").let {
+                    textArea.text = it
+                }
+            }
+        })
     }
 
-    fun onChange(users: List<User>) {
-        users.joinToString("\n").let {
-            textArea.text = it
-        }
-    }
+
 }

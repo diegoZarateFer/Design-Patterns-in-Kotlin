@@ -11,7 +11,7 @@ class UsersRepository private constructor() {
 
     private val file = File("users.json")
 
-    private val observers =  mutableListOf<Display>()
+    private val observers =  mutableListOf<Observer<List<User>>>()
 
     private val _users = loadUsers()
     val users: MutableList<User>
@@ -19,19 +19,18 @@ class UsersRepository private constructor() {
 
     private fun notifyObservers() {
         for(observer in observers ) {
-            observer.onChange(users)
+            observer.onChanged(users)
         }
     }
 
-    fun registerObserver(observer: Display) {
+    fun registerObserver(observer: Observer<List<User>>) {
         observers.add(observer)
-        observer.onChange(users)
+        observer.onChanged(users)
     }
 
     var display: Display? = null
         set(value) {
             field = value
-            display?.onChange(users)
         }
 
     private fun loadUsers(): MutableList<User> {
