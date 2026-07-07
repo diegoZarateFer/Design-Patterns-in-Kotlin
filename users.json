@@ -1,14 +1,1 @@
-[
-  {
-    "id": 1,
-    "first_name": "Cloris",
-    "last_name": "Loblie",
-    "age": 31
-  },
-  {
-    "id": 2,
-    "first_name": "Cosme",
-    "last_name": "Stuehmeyer",
-    "age": 64
-  }
-]
+[{"id":1,"first_name":"Cloris","last_name":"Loblie","age":31},{"id":2,"first_name":"Cosme","last_name":"Stuehmeyer","age":64},{"id":3,"first_name":"Diego","last_name":"Diego","age":24}]
