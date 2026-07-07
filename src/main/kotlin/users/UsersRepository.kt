@@ -27,6 +27,10 @@ class UsersRepository private constructor(): Observable<List<User>>  {
         }
     }
 
+    override fun unregisterObserver(observer: Observer<List<User>>) {
+        _observers.remove(observer)
+    }
+
     override fun registerObserver(observer: Observer<List<User>>) {
         _observers.add(observer)
         observer.onChanged(users)

@@ -10,4 +10,6 @@ interface Observable<T> {
             observer.onChanged(currentValue)
         }
     }
+
+    fun unregisterObserver(observer: Observer<T>)
 }
