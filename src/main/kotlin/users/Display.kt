@@ -24,14 +24,14 @@ class Display {
             add(scrollPane)
         }
 
-        UsersRepository.getInstance("12345").registerObserver(object : Observer<List<User>> {
-            override fun onChanged(users: List<User>) {
-                users.joinToString("\n").let {
-                    textArea.text = it
-                }
-            }
-        })
+//        UsersRepository.getInstance("12345").users.registerObserver {
+//            textArea.text = it.joinToString("\n")
+//        }
+
+        UsersRepository.getInstance("12345").oldestUser.registerObserver {
+            textArea.text = "Oldest person is: ${it.firstName} and has ${it.age} years old."
+        }
+
+
     }
-
-
 }
