@@ -3,7 +3,7 @@ package users
 import kotlinx.serialization.json.Json
 import java.io.File
 
-class UsersRepository private constructor()  {
+class UsersRepository private constructor() {
 
     init {
         println("Creating repository...")
@@ -11,10 +11,19 @@ class UsersRepository private constructor()  {
 
     private val file = File("users.json")
 
-    private val _users = loadUsers()
-    val users = MutableObservable(_users.toList())
+    private val _userList = loadUsers()
 
-    val oldestUser = MutableObservable(_users.maxBy { it.age })
+    /**
+     * Se aprovecha el down casting para no permitir el acceso desde fuera de esta clase
+     * al [currentValue] del [MutableObservable].
+     *
+     * Se aprovecha el back field para retornar un objeto tipo [Observable].
+     */
+    private val _users = MutableObservable(_userList.toList())
+    val users: Observable<List<User>>
+        get() = _users
+
+    val oldestUser = MutableObservable(_userList.maxBy { it.age })
 
     private fun loadUsers(): MutableList<User> {
         val content = file.readText().trim()
@@ -22,29 +31,29 @@ class UsersRepository private constructor()  {
     }
 
     fun addUser(name: String, lastname: String, age: Int) {
-        val id = _users.maxOf { it.id } + 1
+        val id = _userList.maxOf { it.id } + 1
         val newUser = User(id, name, lastname, age)
 
-        _users.add(newUser)
-        users.currentValue = _users.toList()
+        _userList.add(newUser)
+        _users.currentValue = _userList.toList()
 
-        if(age > oldestUser.currentValue.age) {
-            oldestUser.currentValue = _users.maxBy { it.age }
+        if (age > oldestUser.currentValue.age) {
+            oldestUser.currentValue = _userList.maxBy { it.age }
         }
     }
 
     fun deleteUser(id: Int) {
-        _users.removeIf { it.id == id }
+        _userList.removeIf { it.id == id }
 
-        users.currentValue = _users.toList()
-        val newOldest = _users.maxBy { it.age }
-        if(newOldest != oldestUser.currentValue) {
+        _users.currentValue = _userList.toList()
+        val newOldest = _userList.maxBy { it.age }
+        if (newOldest != oldestUser.currentValue) {
             oldestUser.currentValue = newOldest
         }
     }
 
     fun saveChanges() {
-        val content = Json.encodeToString(_users)
+        val content = Json.encodeToString(_userList)
         file.writeText(content)
     }
 
