@@ -1,4 +1,4 @@
-package users
+package observer
 
 class MutableObservable<T>(initialValue: T) : Observable<T> {
     override var currentValue: T = initialValue

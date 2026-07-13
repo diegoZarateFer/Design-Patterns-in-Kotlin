@@ -1,4 +1,4 @@
-package users
+package observer
 
 /// Functional interface
 fun interface Observer<T> {

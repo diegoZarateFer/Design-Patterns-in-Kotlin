@@ -22,7 +22,7 @@ class Administrator {
 
             when(operation) {
                 Operation.EXIT -> {
-                    repository.saveChanges()
+                    UsersInvoker.addCommand(AdministratorCommands.SaveChanges(repository))
                    break
                 }
 
@@ -36,14 +36,14 @@ class Administrator {
                    print("Enter age: ")
                    val age = readln().toInt()
 
-                    repository.addUser(firstName, lastName, age)
+                    UsersInvoker.addCommand(AdministratorCommands.AddUser(repository, firstName, lastName, age))
                 }
 
                 Operation.DELETE_USER -> {
                     print("Enter use id: ")
                     val id = readln().toInt()
 
-                    repository.deleteUser(id)
+                    UsersInvoker.addCommand(AdministratorCommands.DeleteUser(repository, id))
                 }
             }
         }

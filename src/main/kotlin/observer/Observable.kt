@@ -1,4 +1,4 @@
-package users
+package observer
 
 interface Observable<T> {
     val currentValue: T
